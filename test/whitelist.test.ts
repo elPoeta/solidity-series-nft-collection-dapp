@@ -1,5 +1,5 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { assert, expect } from "chai";
+import { expect } from "chai";
 import { Contract, ContractFactory } from "ethers";
 import { ethers } from "hardhat";
 
@@ -39,7 +39,7 @@ describe("Whitelist", function () {
       for (let i = 1; i < 10; i++) {
         const signer = accounts[i];
         wlc = await whitelist.connect(signer);
-        wlc.addAddressToWhiteList();
+        await wlc.addAddressToWhiteList();
       }
       wlc = await whitelist.connect(accounts[15]);
       await expect(wlc!.addAddressToWhiteList())

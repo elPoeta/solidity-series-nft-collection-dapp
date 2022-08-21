@@ -5,30 +5,42 @@ import * as path from "path";
 async function main() {
   const chainId = network.config.chainId;
   console.log("chain", chainId);
+  console.log("--------------------------------------------\n");
+  console.log("### DEPLOY WHITELIST CONTRACT ###\n");
+
   const Whitelist = await ethers.getContractFactory("Whitelist");
   const whitelist = await Whitelist.deploy(10);
   await whitelist.deployed();
 
-  console.log("Whitelist deployed to:", whitelist.address);
+  console.log("WHITELIST DEPLOYED TO: ", whitelist.address);
+  console.log("\n--------------------------------------------");
+  console.log("### DEPLOY POETHER CONTRACT ###");
 
-  const whitelistJson = JSON.parse(
-    readFileSync(
-      path.resolve(__dirname, "../", "lib", "Whitelist.json"),
-      "utf8"
-    )
-  );
+  const Poether = await ethers.getContractFactory("Poether");
+  const poether = await Poether.deploy("poether.com", whitelist.address);
+  poether.deployed();
 
-  const whitelistAbi = {
-    address: whitelist.address,
-    abi: JSON.parse(whitelist.interface.format("json") as string),
-  };
+  console.log("\nPOETHER DEPLOYED TO: ", poether.address);
+  console.log("\n--------------------------------------------");
 
-  whitelistJson[chainId!.toString()] = whitelistAbi;
+  // const whitelistJson = JSON.parse(
+  //   readFileSync(
+  //     path.resolve(__dirname, "../", "lib", "Whitelist.json"),
+  //     "utf8"
+  //   )
+  // );
 
-  writeFileSync(
-    path.resolve(__dirname, "../", "lib", "Whitelist.json"),
-    JSON.stringify(whitelistJson, null, 2)
-  );
+  // const whitelistAbi = {
+  //   address: whitelist.address,
+  //   abi: JSON.parse(whitelist.interface.format("json") as string),
+  // };
+
+  // whitelistJson[chainId!.toString()] = whitelistAbi;
+
+  // writeFileSync(
+  //   path.resolve(__dirname, "../", "lib", "Whitelist.json"),
+  //   JSON.stringify(whitelistJson, null, 2)
+  // );
 }
 
 main().catch((error) => {
