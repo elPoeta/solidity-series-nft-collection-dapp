@@ -13,10 +13,12 @@ error presale_runnig(string message);
 error address_not_listed(string message);
 error exceeded_max_supply(string message);
 error insufficient_ether(string message);
+error withdraw_fail(string message);
 
 contract Poether is ERC721Enumerable, Ownable {
     event presale_started(bool indexed s_presaleStarted);
     event token_minted(uint256 tokenId);
+    event withdraw_sent(uint256 amount);
 
     using Counters for Counters.Counter;
     Counters.Counter private s_tokenIds;
@@ -86,6 +88,14 @@ contract Poether is ERC721Enumerable, Ownable {
         uint256 tokenId = s_tokenIds.current();
         _safeMint(msg.sender, tokenId);
         emit token_minted(tokenId);
+    }
+
+    function withdraw() public onlyOwner {
+        address _owner = owner();
+        uint256 amount = address(this).balance;
+        (bool sent, ) = _owner.call{value: amount}("");
+        if (!sent) revert withdraw_fail({message: "Failed to send Ether"});
+        emit withdraw_sent(amount);
     }
 
     function _baseURI() internal view virtual override returns (string memory) {
