@@ -17,7 +17,7 @@ async function main() {
   console.log("### DEPLOY POETHER CONTRACT ###");
 
   const Poether = await ethers.getContractFactory("Poether");
-  const poether = await Poether.deploy("poether.com", whitelist.address);
+  const poether = await Poether.deploy("poether.com", 20, whitelist.address);
   poether.deployed();
 
   console.log("\nPOETHER DEPLOYED TO: ", poether.address);
