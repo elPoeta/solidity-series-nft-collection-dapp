@@ -173,4 +173,29 @@ describe("Poether", function () {
       });
     });
   });
+
+  // ### WITHDRAW
+  describe("withdraw", () => {
+    beforeEach(async () => {
+      const price = ethers.utils.parseUnits("0.01", "ether");
+      await poether.startPresale();
+      for (let i = 1; i < MAX_LISTED; i++) {
+        const account = accounts[i];
+        const contract = await poether.connect(account);
+        await contract.presaleMint({ value: price });
+      }
+    });
+
+    it("amount sent to owner", async () => {
+      await expect(poether.connect(deployer).withdraw()).to.be.emit(
+        poether,
+        "withdraw_sent"
+      );
+    });
+    it("withdraw call from not owner", async () => {
+      await expect(poether.connect(accounts[1]).withdraw()).to.revertedWith(
+        "Ownable: caller is not the owner"
+      );
+    });
+  });
 });
