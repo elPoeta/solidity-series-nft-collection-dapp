@@ -6,14 +6,17 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./IWhitelist.sol";
 
+import "hardhat/console.sol";
+
 error presale_not_runnig(string message);
+error presale_runnig(string message);
 error address_not_listed(string message);
 error exceeded_max_supply(string message);
 error insufficient_ether(string message);
 
 contract Poether is ERC721Enumerable, Ownable {
     event presale_started(bool indexed s_presaleStarted);
-    event presale_minted(uint256 tokenId);
+    event token_minted(uint256 tokenId);
 
     using Counters for Counters.Counter;
     Counters.Counter private s_tokenIds;
@@ -62,7 +65,27 @@ contract Poether is ERC721Enumerable, Ownable {
         s_tokenIds.increment();
         uint256 tokenId = s_tokenIds.current();
         _safeMint(msg.sender, tokenId);
-        emit presale_minted(tokenId);
+        emit token_minted(tokenId);
+    }
+
+    function mint() public payable {
+        if (s_presaleStarted && block.timestamp <= s_presaleEndedInMinutes)
+            revert presale_runnig({message: "Presale has not ended yet"});
+
+        if (s_tokenIds.current() >= s_maxTokenIds)
+            revert exceeded_max_supply({
+                message: "Exceeded maximum LETTHER supply"
+            });
+
+        if (msg.value < s_price)
+            revert insufficient_ether({
+                message: "Ether sent is not correct - minimum price 0.01 ether"
+            });
+
+        s_tokenIds.increment();
+        uint256 tokenId = s_tokenIds.current();
+        _safeMint(msg.sender, tokenId);
+        emit token_minted(tokenId);
     }
 
     function _baseURI() internal view virtual override returns (string memory) {

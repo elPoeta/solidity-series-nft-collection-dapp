@@ -70,7 +70,7 @@ describe("Poether", function () {
       it("presale token minted", async () => {
         await poether.startPresale();
         await expect(poether.connect(accounts[1]).presaleMint({ value: price }))
-          .to.emit(poether, "presale_minted")
+          .to.emit(poether, "token_minted")
           .withArgs(1);
       });
     });
@@ -115,10 +115,59 @@ describe("Poether", function () {
           .withArgs("Exceeded maximum LETTHER supply");
       });
 
-      it("presale not in whitelist", async () => {
+      it("Ether sent is not correct", async () => {
         price = ethers.utils.parseUnits("0.001", "ether");
         await poether.startPresale();
         await expect(poether.connect(accounts[1]).presaleMint({ value: price }))
+          .to.be.revertedWithCustomError(poether, "insufficient_ether")
+          .withArgs("Ether sent is not correct - minimum price 0.01 ether");
+      });
+    });
+  });
+
+  // ### PUBLIC-MINT
+  describe("Public-Mint", () => {
+    let price = ethers.utils.parseUnits("0.01", "ether");
+    describe("Mint Success", () => {
+      it("public token minted", async () => {
+        await poether.startPresale();
+        await network.provider.send("evm_increaseTime", [60 * 6]);
+        await network.provider.request({ method: "evm_mine", params: [] });
+        await expect(poether.connect(accounts[1]).mint({ value: price }))
+          .to.emit(poether, "token_minted")
+          .withArgs(1);
+      });
+    });
+
+    describe("Minted FAIL", () => {
+      it("Presale has not ended yet", async () => {
+        await poether.startPresale();
+        await expect(poether.connect(accounts[1]).mint({ value: price }))
+          .to.be.revertedWithCustomError(poether, "presale_runnig")
+          .withArgs("Presale has not ended yet");
+      });
+      it("presale overflow max supply", async () => {
+        await poether.setMaxSupply(MAX_LISTED - 1);
+        await poether.startPresale();
+        for (let i = 1; i < MAX_LISTED; i++) {
+          const account = accounts[i];
+          const contract = await poether.connect(account);
+          await contract.presaleMint({ value: price });
+        }
+        await network.provider.send("evm_increaseTime", [60 * 6]);
+        await network.provider.request({ method: "evm_mine", params: [] });
+        await expect(
+          poether.connect(accounts[MAX_LISTED]).mint({ value: price })
+        )
+          .to.be.revertedWithCustomError(poether, "exceeded_max_supply")
+          .withArgs("Exceeded maximum LETTHER supply");
+      });
+      it("Ether sent is not correct", async () => {
+        price = ethers.utils.parseUnits("0.001", "ether");
+        await poether.startPresale();
+        await network.provider.send("evm_increaseTime", [60 * 6]);
+        await network.provider.request({ method: "evm_mine", params: [] });
+        await expect(poether.connect(accounts[1]).mint({ value: price }))
           .to.be.revertedWithCustomError(poether, "insufficient_ether")
           .withArgs("Ether sent is not correct - minimum price 0.01 ether");
       });
