@@ -14,6 +14,7 @@ error address_not_listed(string message);
 error exceeded_max_supply(string message);
 error insufficient_ether(string message);
 error withdraw_fail(string message);
+error paused(string message);
 
 contract Poether is ERC721Enumerable, Ownable {
     event presale_started(bool indexed s_presaleStarted);
@@ -28,8 +29,8 @@ contract Poether is ERC721Enumerable, Ownable {
     bool private s_presaleStarted;
     uint256 private s_presaleEndedInMinutes;
     uint256 private s_price = 0.01 ether;
-
     uint256 private s_maxTokenIds;
+    bool s_paused;
 
     constructor(
         string memory baseURI,
@@ -39,6 +40,12 @@ contract Poether is ERC721Enumerable, Ownable {
         s_baseTokenURI = baseURI;
         s_maxTokenIds = _maxTokenIds;
         s_whitelist = IWhitelist(whitelistContract);
+        s_paused = false;
+    }
+
+    modifier onlyWhenNotPaused() {
+        if (s_paused) revert paused({message: "Contract currently paused"});
+        _;
     }
 
     function startPresale() public onlyOwner {
@@ -47,7 +54,7 @@ contract Poether is ERC721Enumerable, Ownable {
         emit presale_started(s_presaleStarted);
     }
 
-    function presaleMint() public payable {
+    function presaleMint() public payable onlyWhenNotPaused {
         if (!s_presaleStarted || block.timestamp > s_presaleEndedInMinutes)
             revert presale_not_runnig({message: "Presale is not running"});
 
@@ -70,7 +77,7 @@ contract Poether is ERC721Enumerable, Ownable {
         emit token_minted(tokenId);
     }
 
-    function mint() public payable {
+    function mint() public payable onlyWhenNotPaused {
         if (s_presaleStarted && block.timestamp <= s_presaleEndedInMinutes)
             revert presale_runnig({message: "Presale has not ended yet"});
 
@@ -96,6 +103,14 @@ contract Poether is ERC721Enumerable, Ownable {
         (bool sent, ) = _owner.call{value: amount}("");
         if (!sent) revert withdraw_fail({message: "Failed to send Ether"});
         emit withdraw_sent(amount);
+    }
+
+    function setPaused(bool _paused) public onlyOwner {
+        s_paused = _paused;
+    }
+
+    function getPaused() public view returns (bool) {
+        return s_paused;
     }
 
     function _baseURI() internal view virtual override returns (string memory) {

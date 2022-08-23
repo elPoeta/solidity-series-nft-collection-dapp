@@ -1,5 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
+import { assert } from "console";
 import { Contract, ContractFactory } from "ethers";
 import { ethers, network } from "hardhat";
 
@@ -196,6 +197,29 @@ describe("Poether", function () {
       await expect(poether.connect(accounts[1]).withdraw()).to.revertedWith(
         "Ownable: caller is not the owner"
       );
+    });
+  });
+
+  // ### Pause
+  describe("Pause contract", function () {
+    it("only owner set pause ", async () => {
+      await poether.connect(deployer).setPaused(true);
+      const paused = await poether.getPaused();
+      assert(paused, true);
+    });
+    it("paused set from not owner", async () => {
+      await expect(
+        poether.connect(accounts[1]).setPaused(true)
+      ).to.revertedWith("Ownable: caller is not the owner");
+    });
+
+    it("minted whith paused", async () => {
+      const price = ethers.utils.parseUnits("0.01", "ether");
+      await poether.startPresale();
+      await poether.connect(deployer).setPaused(true);
+      await expect(poether.connect(accounts[1]).presaleMint({ value: price }))
+        .to.be.revertedWithCustomError(poether, "paused")
+        .withArgs("Contract currently paused");
     });
   });
 });
