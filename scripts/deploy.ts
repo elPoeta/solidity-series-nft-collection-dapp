@@ -23,24 +23,21 @@ async function main() {
   console.log("\nPOETHER DEPLOYED TO: ", poether.address);
   console.log("\n--------------------------------------------");
 
-  // const whitelistJson = JSON.parse(
-  //   readFileSync(
-  //     path.resolve(__dirname, "../", "lib", "Whitelist.json"),
-  //     "utf8"
-  //   )
-  // );
+  const poetherJson = JSON.parse(
+    readFileSync(path.resolve(__dirname, "../", "lib", "poether.json"), "utf8")
+  );
 
-  // const whitelistAbi = {
-  //   address: whitelist.address,
-  //   abi: JSON.parse(whitelist.interface.format("json") as string),
-  // };
+  const poetherAbi = {
+    address: poether.address,
+    abi: JSON.parse(poether.interface.format("json") as string),
+  };
 
-  // whitelistJson[chainId!.toString()] = whitelistAbi;
+  poetherJson[chainId!.toString()] = poetherAbi;
 
-  // writeFileSync(
-  //   path.resolve(__dirname, "../", "lib", "Whitelist.json"),
-  //   JSON.stringify(whitelistJson, null, 2)
-  // );
+  writeFileSync(
+    path.resolve(__dirname, "../", "lib", "poether.json"),
+    JSON.stringify(poetherJson, null, 2)
+  );
 }
 
 main().catch((error) => {
