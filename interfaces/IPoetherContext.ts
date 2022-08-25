@@ -15,5 +15,5 @@ export interface IPoetherContext {
 }
 export interface IDispatch {
   type: string;
-  data: any;
+  data?: any;
 }
