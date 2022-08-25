@@ -7,6 +7,7 @@ import {
 const actions: Record<string, string> = {
   CONNECT: "CONNECT",
   LOADING: "LOADING",
+  RESET: "RESET",
 };
 
 const initialState: IPoetherState = {
@@ -25,6 +26,8 @@ const reducer = (state: IPoetherState, action: IDispatch) => {
       return { ...state, ...data };
     case actions.LOADING:
       return { ...state, loading: !state.loading };
+    case actions.RESET:
+      return initialState;
     default:
       return state;
   }
