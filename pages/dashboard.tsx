@@ -1,9 +1,12 @@
  import { NextPage } from 'next'
 import React from 'react'
+import { Dashboard } from '../components/dashboard/Dashboard'
  
- export const dashboard:NextPage = () => {
+ const dashboard:NextPage = () => {
+
    return (
-     <div>dashboard</div>
+     <Dashboard />
    )
  }
  
+ export default dashboard
