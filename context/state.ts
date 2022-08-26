@@ -1,8 +1,4 @@
-import {
-  IDispatch,
-  IPoetherContext,
-  IPoetherState,
-} from "../interfaces/IPoetherContext";
+import { IDispatch, IPoetherState } from "../interfaces/IPoetherContext";
 
 const actions: Record<string, string> = {
   CONNECT: "CONNECT",
