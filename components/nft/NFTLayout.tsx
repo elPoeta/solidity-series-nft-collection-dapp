@@ -21,7 +21,7 @@ export const NFTLayout = () => {
   </div>
 </div>
 )}
-<div>
+<div className='w-[500px] h-[500px]'>
   <Image
     src={NFTArt}
     layout="responsive"
