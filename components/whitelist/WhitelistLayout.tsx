@@ -86,11 +86,10 @@ export const WhitelistLayout = () => {
           <div>
             <Image
               src={whitelistIlustartion}
-              width={600}
-              height={600}
               layout="responsive"
               alt="ilustratiion"
-              priority={false}
+              priority={true}
+              unoptimized={true}
             />
           </div>
         </div>
