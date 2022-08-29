@@ -1,11 +1,13 @@
 import Image from 'next/image';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { usePoether } from '../../context/usePoether'
 import NFTArt from '../../assets/nftArt.svg'
 import { Loader } from '../common/Loader';
 
 export const NFTLayout = () => {
-  const {state:{loading}, dispatch}  = usePoether();
+  const { state: { loading }, dispatch }  = usePoether();
+
+
   return (
     <div className="grid grid-cols-[2fr_1fr] items-center justify-center w-[80%] mx-auto my-20">
     {loading ? (
@@ -17,7 +19,7 @@ export const NFTLayout = () => {
     <h4 className="text-2xl tracking-widest font-light text-cyan-300">
       NFT collection in cryptos.
     </h4>
-   
+
   </div>
 </div>
 )}
