@@ -11,3 +11,8 @@ export const getPoetherContract = async (
     : new ethers.providers.JsonRpcProvider(RPC_URL);
   return await getSmartContract(POETHER_CONTRACT, provider, signer);
 };
+
+export const getOwner = async () => {
+  const poetherContract = await getPoetherContract();
+  return await poetherContract.owner();
+};
