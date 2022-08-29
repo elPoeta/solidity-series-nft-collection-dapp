@@ -18,7 +18,8 @@ export const Hero = () => {
           alt="NFT Art Image"
           width={400}
           height={400}
-          layout='responsive'         
+          layout='responsive'    
+          priority={true}     
         />
       </div>
     </section>
