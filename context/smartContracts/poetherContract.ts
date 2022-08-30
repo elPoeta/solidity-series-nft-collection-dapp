@@ -26,3 +26,26 @@ export const startPresale = async (
   console.log(starting);
   await web3Provider.waitForTransaction(starting.hash);
 };
+
+export const isPresaleStarted = async (): Promise<boolean> => {
+  const poetherContract = await getPoetherContract();
+  return await poetherContract.getPresaleStarted();
+};
+
+export const getPresaleEndedInMinutes = async (): Promise<number> => {
+  const poetherContract = await getPoetherContract();
+  const endTimeSeconds = await poetherContract.getPresaleEndedInMinutes();
+  return parseInt(endTimeSeconds.toString()) * 1000;
+};
+
+export const getMaxSupply = async (): Promise<number> => {
+  const poetherContract = await getPoetherContract();
+  const maxSupply = await poetherContract.getMaxSupply();
+  return parseInt(maxSupply.toString());
+};
+
+export const getPrice = async (): Promise<string> => {
+  const poetherContract = await getPoetherContract();
+  const price = await poetherContract.getPrice();
+  return price.toString();
+};
