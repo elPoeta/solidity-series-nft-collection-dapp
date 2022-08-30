@@ -129,6 +129,18 @@ contract Poether is ERC721Enumerable, Ownable {
         s_maxTokenIds = _tokenSupply;
     }
 
+    function getPresaleStarted() public view returns (bool) {
+        return s_presaleStarted;
+    }
+
+    function getPresaleEndedInMinutes() public view returns (uint256) {
+        return s_presaleEndedInMinutes;
+    }
+
+    function getPrice() public view returns (uint256) {
+        return s_price;
+    }
+
     receive() external payable {}
 
     fallback() external payable {}
