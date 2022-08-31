@@ -2,12 +2,16 @@ import Image from 'next/image'
 import Link from 'next/link';
 import React from 'react'
 import nftArt from '../../assets/NFT-blockchain.svg';
+import Logo from '../header/Logo';
 
 export const Hero = () => {
   return (
     <section className='grid grid-cols-2 items-center justify-center gap-2'>
       <div className='justify-self-center flex flex-col'>
-        <h2 className='text-8xl text-green-500 p-4'>Poether</h2>
+        <div className='flex relative'>
+         <Logo fill='#61c65e' classNames='w-60 h-60 absolute top-[-8rem] left-[-8rem] -rotate-15' />
+         <h2 className='text-8xl text-green-500 p-4'>Poether</h2>
+        </div>
         <h4 className='text-2xl text-pink-400 text-center font-bold'>NFT Collections.</h4>
         <h6 className='py-2 text-center font-light text-xl text-gray-200'>Buy your LETTHER tokens.</h6>
         <div className='flex flex-row items-center justify-end'>
