@@ -6,6 +6,7 @@ export interface IPoetherState {
   signerAddress: string | null;
   web3Provider: providers.Web3Provider | null;
   networkId: number | null;
+  isPresaleStarted: boolean;
   loading: boolean;
 }
 

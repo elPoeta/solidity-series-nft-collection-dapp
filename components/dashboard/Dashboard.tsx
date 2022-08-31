@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { getOwner, startPresale } from "../../context/smartContracts/poetherContract";
+import { getOwner, presaleStarted, startPresale } from "../../context/smartContracts/poetherContract";
 import { actions } from "../../context/state";
 import { usePoether } from "../../context/usePoether";
 import { Loader } from "../common/Loader";
+import OwnerDasboard from "./OwnerDasboard";
 
 export const Dashboard = () => {
   const {
@@ -29,22 +30,24 @@ export const Dashboard = () => {
     if (!isConnected) router.push("/");
   }, [router, isConnected]);
 
-  const handleStartPresale = async () => {
-    if(!web3Provider) return;
-     const connectedSigner = web3Provider.getSigner();
-     await startPresale(web3Provider, connectedSigner); 
-  }
+  useEffect(()=>{
+    dispatch({ type: actions.LOADING });
+   (async () => {
+    const isStarted = await presaleStarted();
+    dispatch({type: actions.PRESALE, data: {isPresaleStarted: isStarted}});
+    dispatch({ type: actions.LOADING });
+   })();
+  },[dispatch]);
 
   return (
     <div>
      {loading ? <Loader className="w-[500px] h-[500px] mx-auto my-0 py-5" size={500} /> : (
       <div>
-        {owner ? (
-          <div>
-            <button onClick={handleStartPresale}>Start Presale</button>
-          </div>) : ''}
+        {owner && <OwnerDasboard />}
       </div>
      )}
     </div>
     )
 };
+
+
