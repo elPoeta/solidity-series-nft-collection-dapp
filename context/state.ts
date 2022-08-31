@@ -2,6 +2,7 @@ import { IDispatch, IPoetherState } from "../interfaces/IPoetherContext";
 
 const actions: Record<string, string> = {
   CONNECT: "CONNECT",
+  PRESALE: "PRESALE",
   LOADING: "LOADING",
   RESET: "RESET",
 };
@@ -11,6 +12,7 @@ const initialState: IPoetherState = {
   signerAddress: null,
   web3Provider: null,
   networkId: null,
+  isPresaleStarted: false,
   loading: false,
 };
 
@@ -20,6 +22,8 @@ const reducer = (state: IPoetherState, action: IDispatch) => {
   switch (type) {
     case actions.CONNECT:
       return { ...state, ...data };
+    case actions.PRESALE:
+      return { ...state, isPresaleStarted: data.isPresaleStarted };
     case actions.LOADING:
       return { ...state, loading: !state.loading };
     case actions.RESET:

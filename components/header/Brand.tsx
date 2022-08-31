@@ -1,7 +1,5 @@
-import Image from 'next/image';
 import Link from 'next/link'
 import React from 'react'
-import hat from '../../assets/poetahat.svg';
 import Logo from './Logo';
 
 export const Brand = () => {

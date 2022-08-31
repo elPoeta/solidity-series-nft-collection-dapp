@@ -27,7 +27,7 @@ export const startPresale = async (
   await web3Provider.waitForTransaction(starting.hash);
 };
 
-export const isPresaleStarted = async (): Promise<boolean> => {
+export const presaleStarted = async (): Promise<boolean> => {
   const poetherContract = await getPoetherContract();
   return await poetherContract.getPresaleStarted();
 };
