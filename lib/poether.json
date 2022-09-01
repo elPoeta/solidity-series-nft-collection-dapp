@@ -329,6 +329,19 @@
       },
       {
         "type": "function",
+        "name": "getTokenIds",
+        "constant": true,
+        "stateMutability": "view",
+        "payable": false,
+        "inputs": [],
+        "outputs": [
+          {
+            "type": "uint256"
+          }
+        ]
+      },
+      {
+        "type": "function",
         "name": "getWhitelist",
         "constant": true,
         "stateMutability": "view",
