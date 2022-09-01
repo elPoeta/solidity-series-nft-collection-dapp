@@ -32,10 +32,19 @@ export const presaleStarted = async (): Promise<boolean> => {
   return await poetherContract.getPresaleStarted();
 };
 
-export const getPresaleEndedInMinutes = async (): Promise<number> => {
+export const getPresaleEndedInMinutes = async () => {
   const poetherContract = await getPoetherContract();
-  const endTimeSeconds = await poetherContract.getPresaleEndedInMinutes();
-  return parseInt(endTimeSeconds.toString()) * 1000;
+  return await poetherContract.getPresaleEndedInMinutes();
+};
+
+export const isPresaleEnded = async (): Promise<boolean> => {
+  try {
+    const _presaleEnded = await getPresaleEndedInMinutes();
+    return _presaleEnded.lt(Math.floor(Date.now() / 1000));
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 };
 
 export const getMaxSupply = async (): Promise<number> => {
