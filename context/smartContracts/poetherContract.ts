@@ -42,7 +42,7 @@ export const getPresaleEndedInMinutes = async () => {
   return await poetherContract.getPresaleEndedInMinutes();
 };
 
-export const isPresaleEnded = async (): Promise<boolean> => {
+export const presaleEnded = async (): Promise<boolean> => {
   try {
     const _presaleEnded = await getPresaleEndedInMinutes();
     return _presaleEnded.lt(Math.floor(Date.now() / 1000));

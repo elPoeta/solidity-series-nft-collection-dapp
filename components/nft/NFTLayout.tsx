@@ -4,7 +4,7 @@ import { usePoether } from "../../context/usePoether";
 import NFTArt from "../../assets/nftArt.svg";
 import { Loader } from "../common/Loader";
 import { actions } from "../../context/state";
-import { getMaxSupply, getTokensCount, mint, presaleStarted } from "../../context/smartContracts/poetherContract";
+import { getMaxSupply, getTokensCount, mint, presaleEnded, presaleStarted } from "../../context/smartContracts/poetherContract";
 import { toast } from "react-toastify";
 
 export const NFTLayout = () => {
@@ -33,6 +33,15 @@ export const NFTLayout = () => {
     (async () => {
       const _started = await presaleStarted();
       dispatch({ type: actions.PRESALE, data: { isPresaleStarted: _started } });
+      dispatch({ type: actions.LOADING });
+    })();
+  },[dispatch]);
+
+  useEffect(() => {
+    dispatch({ type: actions.LOADING });
+    (async () => {
+      const _ended = await presaleEnded();
+      dispatch({ type: actions.ENDED, data: { isPresaleEnded: _ended} });
       dispatch({ type: actions.LOADING });
     })();
   },[dispatch]);
