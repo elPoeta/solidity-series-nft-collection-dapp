@@ -4,7 +4,7 @@ import { usePoether } from "../../context/usePoether";
 import NFTArt from "../../assets/nftArt.svg";
 import { Loader } from "../common/Loader";
 import { actions } from "../../context/state";
-import { getMaxSupply, getTokensCount } from "../../context/smartContracts/poetherContract";
+import { getMaxSupply, getTokensCount, mint, presaleStarted } from "../../context/smartContracts/poetherContract";
 import { toast } from "react-toastify";
 
 export const NFTLayout = () => {
@@ -28,15 +28,36 @@ export const NFTLayout = () => {
     })();
   },[dispatch]);
 
-  const presaleMint = () => mint('presaleMint');
-  
-  const publicMint = () => mint('publicMint')
+  useEffect(() => {
+    dispatch({ type: actions.LOADING });
+    (async () => {
+      const _started = await presaleStarted();
+      dispatch({ type: actions.PRESALE, data: { isPresaleStarted: _started } });
+      dispatch({ type: actions.LOADING });
+    })();
+  },[dispatch]);
 
-  const mint = (mintType:string) => {
+  const presaleMint = () => mintToken('presaleMint');
+  
+  const publicMint = () => mintToken('mint')
+
+  const mintToken = async (mintType:string) => {
      if(!isConnected) {
       toast.info("Please connect your wallet!", { autoClose: 3000 });
       return;
      }
+     if(!web3Provider) return;
+     dispatch({ type: actions.LOADING });     
+     const signer = web3Provider.getSigner();
+     const minted = await mint(web3Provider, signer, mintType);
+     if(minted) {
+       toast.success("Token minted!", { autoClose: 3000 });
+       const _tokens = await getTokensCount();
+       if(_tokens) setTokensCounter(_tokens);
+     } else {
+      toast.error("Transaction error!", { autoClose: 3000 });
+     } 
+     dispatch({ type: actions.LOADING });     
   }
 
   const renderButton = ():JSX.Element => {

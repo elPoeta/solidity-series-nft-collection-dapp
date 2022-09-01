@@ -10,16 +10,21 @@ const OwnerDasboard = () => {
 
   const handleStartPresale = async () => {
     if(!web3Provider) return;
+     dispatch({ type: actions.LOADING});
      const connectedSigner = web3Provider.getSigner();
-     await startPresale(web3Provider, connectedSigner); 
+     const _started = await startPresale(web3Provider, connectedSigner); 
+     dispatch({ type: actions.PRESALE, data: { isPresaleStarted: _started } });
+     dispatch({ type: actions.LOADING});
   }
 
   const handlePause = async () => {
-    if(!web3Provider) return;
+     if(!web3Provider) return;
+    dispatch({ type: actions.LOADING});
      const connectedSigner = web3Provider.getSigner();
      const _pause = !pause;
      await setPause(web3Provider, connectedSigner, _pause);
      dispatch({ type: actions.PAUSE, data: { pause: _pause } });
+     dispatch({ type: actions.LOADING});
   }
 
   return (

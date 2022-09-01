@@ -20,11 +20,16 @@ export const getOwner = async (): Promise<string> => {
 export const startPresale = async (
   web3Provider: providers.Web3Provider,
   signer: providers.JsonRpcSigner
-): Promise<void> => {
-  const poetherContract = await getPoetherContract(web3Provider, signer);
-  const tx = await poetherContract.startPresale();
-  console.log(tx);
-  await web3Provider.waitForTransaction(tx.hash);
+): Promise<boolean> => {
+  try {
+    const poetherContract = await getPoetherContract(web3Provider, signer);
+    const tx = await poetherContract.startPresale();
+    await web3Provider.waitForTransaction(tx.hash);
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 };
 
 export const presaleStarted = async (): Promise<boolean> => {
@@ -86,7 +91,9 @@ export const mint = async (
 ): Promise<boolean> => {
   try {
     const poetherContract = await getPoetherContract(web3Provider, signer);
-    const tx = poetherContract[mintType]({ value: utils.parseEther("0.01") });
+    const tx = await poetherContract[mintType]({
+      value: utils.parseEther("0.01"),
+    });
     await web3Provider.waitForTransaction(tx.hash);
     return true;
   } catch (error) {
