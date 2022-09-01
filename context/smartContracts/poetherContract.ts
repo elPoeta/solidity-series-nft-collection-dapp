@@ -1,4 +1,4 @@
-import { Contract, ethers, providers } from "ethers";
+import { Contract, ethers, providers, utils } from "ethers";
 import { POETHER_CONTRACT, RPC_URL } from "../../utils/artifacts";
 import { getSmartContract } from "./smartContract";
 
@@ -22,9 +22,9 @@ export const startPresale = async (
   signer: providers.JsonRpcSigner
 ): Promise<void> => {
   const poetherContract = await getPoetherContract(web3Provider, signer);
-  const starting = await poetherContract.startPresale();
-  console.log(starting);
-  await web3Provider.waitForTransaction(starting.hash);
+  const tx = await poetherContract.startPresale();
+  console.log(tx);
+  await web3Provider.waitForTransaction(tx.hash);
 };
 
 export const presaleStarted = async (): Promise<boolean> => {
@@ -32,10 +32,19 @@ export const presaleStarted = async (): Promise<boolean> => {
   return await poetherContract.getPresaleStarted();
 };
 
-export const getPresaleEndedInMinutes = async (): Promise<number> => {
+export const getPresaleEndedInMinutes = async () => {
   const poetherContract = await getPoetherContract();
-  const endTimeSeconds = await poetherContract.getPresaleEndedInMinutes();
-  return parseInt(endTimeSeconds.toString()) * 1000;
+  return await poetherContract.getPresaleEndedInMinutes();
+};
+
+export const isPresaleEnded = async (): Promise<boolean> => {
+  try {
+    const _presaleEnded = await getPresaleEndedInMinutes();
+    return _presaleEnded.lt(Math.floor(Date.now() / 1000));
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 };
 
 export const getMaxSupply = async (): Promise<number> => {
@@ -56,10 +65,27 @@ export const setPause = async (
   _pause: boolean
 ): Promise<void> => {
   const poetherContract = await getPoetherContract(web3Provider, signer);
-  await poetherContract.setPaused(_pause);
+  const tx = await poetherContract.setPaused(_pause);
+  await web3Provider.waitForTransaction(tx.hash);
 };
 
 export const getPause = async (): Promise<boolean> => {
   const poetherContract = await getPoetherContract();
   return await poetherContract.getPaused();
+};
+
+export const mint = async (
+  web3Provider: providers.Web3Provider,
+  signer: providers.JsonRpcSigner,
+  mintType: string
+): Promise<boolean> => {
+  try {
+    const poetherContract = await getPoetherContract(web3Provider, signer);
+    const tx = poetherContract[mintType]({ value: utils.parseEther("0.01") });
+    await web3Provider.waitForTransaction(tx.hash);
+    return true;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 };
