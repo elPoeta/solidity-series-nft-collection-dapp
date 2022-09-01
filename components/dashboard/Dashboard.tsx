@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-import { getOwner, presaleStarted, startPresale } from "../../context/smartContracts/poetherContract";
+import { getOwner, getPause, presaleStarted } from "../../context/smartContracts/poetherContract";
 import { actions } from "../../context/state";
 import { usePoether } from "../../context/usePoether";
 import { Loader } from "../common/Loader";
@@ -35,6 +35,15 @@ export const Dashboard = () => {
    (async () => {
     const isStarted = await presaleStarted();
     dispatch({type: actions.PRESALE, data: {isPresaleStarted: isStarted}});
+    dispatch({ type: actions.LOADING });
+   })();
+  },[dispatch]);
+
+  useEffect(()=>{
+    dispatch({ type: actions.LOADING });
+   (async () => {
+    const pause = await getPause();
+    dispatch({type: actions.PAUSE, data: { pause }});
     dispatch({ type: actions.LOADING });
    })();
   },[dispatch]);
