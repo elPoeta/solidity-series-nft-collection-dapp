@@ -7,6 +7,7 @@ export interface IPoetherState {
   web3Provider: providers.Web3Provider | null;
   networkId: number | null;
   isPresaleStarted: boolean;
+  pause: boolean;
   loading: boolean;
 }
 

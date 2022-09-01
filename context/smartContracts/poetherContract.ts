@@ -49,3 +49,17 @@ export const getPrice = async (): Promise<string> => {
   const price = await poetherContract.getPrice();
   return price.toString();
 };
+
+export const setPause = async (
+  web3Provider: providers.Web3Provider,
+  signer: providers.JsonRpcSigner,
+  _pause: boolean
+): Promise<void> => {
+  const poetherContract = await getPoetherContract(web3Provider, signer);
+  await poetherContract.setPaused(_pause);
+};
+
+export const getPause = async (): Promise<boolean> => {
+  const poetherContract = await getPoetherContract();
+  return await poetherContract.getPaused();
+};
