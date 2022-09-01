@@ -89,3 +89,14 @@ export const mint = async (
     return false;
   }
 };
+
+export const getTokensCount = async (): Promise<number | null> => {
+  try {
+    const poetherContract = await getPoetherContract();
+    const _tokenIds = await poetherContract.getTokenIds();
+    return parseInt(_tokenIds.toString());
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
