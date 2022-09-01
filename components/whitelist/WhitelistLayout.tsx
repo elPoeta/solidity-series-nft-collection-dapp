@@ -75,7 +75,7 @@ export const WhitelistLayout = () => {
               {(!isConnected || !isListed) && (
                 <button
                   onClick={handleJoin}
-                  className="bg-gradient-to-r from-emerald-500 to-lime-600 p-2 rounded-md font-semibold w-[160px] ml-[320px]"
+                  className="bg-gradient-to-r from-emerald-500 to-lime-600 p-2 rounded-md font-semibold w-[160px] ml-[320px] text-slate-800"
                 >
                   {joined < maxListed ? "Join the whitelist" : "Join closed"}
                 </button>
