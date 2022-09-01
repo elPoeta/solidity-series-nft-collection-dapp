@@ -47,10 +47,15 @@ export const isPresaleEnded = async (): Promise<boolean> => {
   }
 };
 
-export const getMaxSupply = async (): Promise<number> => {
-  const poetherContract = await getPoetherContract();
-  const maxSupply = await poetherContract.getMaxSupply();
-  return parseInt(maxSupply.toString());
+export const getMaxSupply = async (): Promise<number | null> => {
+  try {
+    const poetherContract = await getPoetherContract();
+    const maxSupply = await poetherContract.getMaxSupply();
+    return parseInt(maxSupply.toString());
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 };
 
 export const getPrice = async (): Promise<string> => {

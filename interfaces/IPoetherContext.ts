@@ -8,6 +8,7 @@ export interface IPoetherState {
   networkId: number | null;
   isPresaleStarted: boolean;
   pause: boolean;
+  isPresaleEnded: boolean;
   loading: boolean;
 }
 

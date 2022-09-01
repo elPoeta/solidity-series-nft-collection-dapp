@@ -6,6 +6,7 @@ const actions: Record<string, string> = {
   PAUSE: "PAUSE",
   LOADING: "LOADING",
   RESET: "RESET",
+  ENDED: "ENDED",
 };
 
 const initialState: IPoetherState = {
@@ -15,6 +16,7 @@ const initialState: IPoetherState = {
   networkId: null,
   isPresaleStarted: false,
   pause: false,
+  isPresaleEnded: false,
   loading: false,
 };
 
@@ -26,6 +28,10 @@ const reducer = (state: IPoetherState, action: IDispatch) => {
       return { ...state, ...data };
     case actions.PRESALE:
       return { ...state, isPresaleStarted: data.isPresaleStarted };
+    case actions.ENDED:
+      return { ...state, isPresaleEnded: data.isPresaleEnded };
+    case actions.PAUSE:
+      return { ...state, pause: data.pause };
     case actions.PAUSE:
       return { ...state, pause: data.pause };
     case actions.LOADING:
